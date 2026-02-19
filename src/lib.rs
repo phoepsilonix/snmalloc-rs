@@ -50,7 +50,7 @@ impl SnMalloc {
     pub fn usable_size(&self, ptr: *const u8) -> Option<usize> {
         match ptr.is_null() {
             true => None,
-            false => Some(unsafe { ffi::sn_rust_usable_size(ptr.cast()) })
+            false => Some(unsafe { ffi::sn_rust_usable_size(ptr.cast()) }),
         }
     }
 
@@ -59,7 +59,7 @@ impl SnMalloc {
     pub fn alloc_aligned(&self, layout: Layout) -> Option<NonNull<u8>> {
         match layout.size() {
             0 => NonNull::new(layout.align() as *mut u8),
-            size => NonNull::new(unsafe { ffi::sn_rust_alloc(layout.align(), size) }.cast())
+            size => NonNull::new(unsafe { ffi::sn_rust_alloc(layout.align(), size) }.cast()),
         }
     }
 }
@@ -77,7 +77,7 @@ unsafe impl GlobalAlloc for SnMalloc {
     unsafe fn alloc(&self, layout: Layout) -> *mut u8 {
         match layout.size() {
             0 => layout.align() as *mut u8,
-            size => ffi::sn_rust_alloc(layout.align(), size).cast()
+            size => ffi::sn_rust_alloc(layout.align(), size).cast(),
         }
     }
 
@@ -99,7 +99,7 @@ unsafe impl GlobalAlloc for SnMalloc {
     unsafe fn alloc_zeroed(&self, layout: Layout) -> *mut u8 {
         match layout.size() {
             0 => layout.align() as *mut u8,
-            size => ffi::sn_rust_alloc_zeroed(layout.align(), size).cast()
+            size => ffi::sn_rust_alloc_zeroed(layout.align(), size).cast(),
         }
     }
 
@@ -123,7 +123,7 @@ unsafe impl GlobalAlloc for SnMalloc {
             new_size if layout.size() == 0 => {
                 self.alloc(Layout::from_size_align_unchecked(new_size, layout.align()))
             }
-            _ => ffi::sn_rust_realloc(ptr.cast(), layout.align(), layout.size(), new_size).cast()
+            _ => ffi::sn_rust_realloc(ptr.cast(), layout.align(), layout.size(), new_size).cast(),
         }
     }
 }
@@ -136,7 +136,7 @@ mod tests {
         let alloc = SnMalloc::new();
         unsafe {
             let layout = Layout::from_size_align(8, 8).unwrap();
-            
+
             // Test regular allocation
             let ptr = alloc.alloc(layout);
             alloc.dealloc(ptr, layout);

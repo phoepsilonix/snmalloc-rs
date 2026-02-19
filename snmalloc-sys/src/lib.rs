@@ -71,7 +71,7 @@ extern "C" {
 
     /// Return the available bytes in a memory block.
     pub fn sn_malloc_usable_size(p: *const c_void) -> usize;
-    
+
 }
 
 #[cfg(test)]
@@ -137,7 +137,7 @@ mod libc_tests {
         let ptr = unsafe { sn_realloc(ptr as *mut c_void, 8) } as *mut u8;
         unsafe { sn_free(ptr as *mut c_void) };
     }
-    
+
     #[test]
     fn it_calculates_malloc_usable_size() {
         let ptr = unsafe { sn_malloc(32) } as *mut u8;
