@@ -10,14 +10,14 @@ extern "C" {
     /// The client must assure the following things:
     /// - `alignment` is greater than zero
     /// - `alignment` is a power of 2
-    /// The program may be forced to abort if the constrains are not full-filled.
+    ///   The program may be forced to abort if the constrains are not full-filled.
     pub fn sn_rust_alloc(alignment: usize, size: usize) -> *mut c_void;
 
     /// De-allocate the memory at the given address with the given alignment and size.
     /// The client must assure the following things:
     /// - the memory is acquired using the same allocator and the pointer points to the start position.
     /// - `alignment` and `size` is the same as allocation
-    /// The program may be forced to abort if the constrains are not full-filled.
+    ///   The program may be forced to abort if the constrains are not full-filled.
     pub fn sn_rust_dealloc(ptr: *mut c_void, alignment: usize, size: usize) -> c_void;
 
     /// Behaves like rust_alloc, but also ensures that the contents are set to zero before being returned.
@@ -31,7 +31,7 @@ extern "C" {
     /// - the memory is acquired using the same allocator and the pointer points to the start position
     /// - `alignment` and `old_size` is the same as allocation
     /// - `alignment` fulfills all the requirements as `rust_alloc`
-    /// The program may be forced to abort if the constrains are not full-filled.
+    ///   The program may be forced to abort if the constrains are not full-filled.
     pub fn sn_rust_realloc(
         ptr: *mut c_void,
         alignment: usize,

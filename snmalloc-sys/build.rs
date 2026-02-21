@@ -61,6 +61,7 @@ struct BuildFeatures {
     android_lld: bool,
     local_dynamic_tls: bool,
     libc_api: bool,
+    static_link: bool,
 }
 
 impl BuildConfig {
@@ -246,7 +247,6 @@ impl BuilderDefine for cmake::Config {
     fn define(&mut self, key: &str, value: &str) -> &mut Self {
         self.define(key, value)
     }
-
     fn flag_if_supported(&mut self, _flag: &str) -> &mut Self {
         self
     }
@@ -286,6 +286,7 @@ impl BuildFeatures {
             android_lld: cfg!(feature = "android-lld"),
             local_dynamic_tls: cfg!(feature = "local_dynamic_tls"),
             libc_api: cfg!(feature = "libc-api"),
+            static_link: cfg!(feature = "static-link"),
         }
     }
 }
@@ -436,6 +437,10 @@ fn configure_platform(config: &mut BuildConfig) {
             if config.features.stats { "ON" } else { "OFF" },
         )
         .define(
+            "USE_SNMALLOC_STATIC_LINK",
+            if config.features.static_link { "ON" } else { "OFF" },
+        )
+        .define(
             "SNMALLOC_RUST_LIBC_API",
             if config.features.libc_api {
                 "ON"
@@ -517,7 +522,8 @@ fn configure_linking(config: &BuildConfig) {
             println!("cargo:rustc-link-lib=pthread");
             println!("cargo:rustc-link-lib=c");
 
-            if !config.target_env.contains("musl") {
+            //if !config.target_env.contains("musl") {
+            if !config.features.static_link {
                 println!("cargo:rustc-link-lib=gcc_s");
             }
 
@@ -570,6 +576,10 @@ fn main() {
     println!("cargo:rustc-link-search={}/build/Debug", config.out_dir);
     println!("cargo:rustc-link-search={}/build/Release", config.out_dir);
     let mut _dst = config.builder.build_lib(&config.target_lib);
-    println!("cargo:rustc-link-lib=static={}", config.target_lib);
+    if config.features.static_link {
+        println!("cargo:rustc-link-lib=static={}", config.target_lib);
+    } else {
+        println!("cargo:rustc-link-lib={}", config.target_lib);
+    }
     configure_linking(&config);
 }

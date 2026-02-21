@@ -39,6 +39,12 @@ pub struct SnMalloc;
 unsafe impl Send for SnMalloc {}
 unsafe impl Sync for SnMalloc {}
 
+impl Default for SnMalloc {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl SnMalloc {
     #[inline(always)]
     pub const fn new() -> Self {
