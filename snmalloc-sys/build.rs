@@ -570,10 +570,6 @@ fn main() {
     println!("cargo:rustc-link-search={}/build/Debug", config.out_dir);
     println!("cargo:rustc-link-search={}/build/Release", config.out_dir);
     let mut _dst = config.builder.build_lib(&config.target_lib);
-    if config.target_env.contains("musl") {
-        println!("cargo:rustc-link-lib=static={}", config.target_lib);
-    } else {
-        println!("cargo:rustc-link-lib={}", config.target_lib);
-    }
+    println!("cargo:rustc-link-lib=static={}", config.target_lib);
     configure_linking(&config);
 }
